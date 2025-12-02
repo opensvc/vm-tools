@@ -22,12 +22,13 @@
     name: wheel
     state: present
 
-- name: Allow 'wheel' group to have passwordless sudo
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+- name: Allow wheel group to have passwordless sudo
+  copy:
+    dest: /etc/sudoers.d/wheel
+    content: "%wheel ALL=(ALL) NOPASSWD: ALL\n"
+    owner: root
+    group: root
+    mode: '0440'
     validate: 'visudo -cf %s'
 
 - name: Add the user 'opensvc'

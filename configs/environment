@@ -21,7 +21,7 @@ NET=$(ip -j addr show br-0-0 2>/dev/null | jq -r '.[].addr_info[] | select(.fami
 NODES=${CONFIGS}/vdc.nodes
 
 KVM_IMAGES_ROOT=/var/lib/libvirt/images
-VM_SYS_SIZE=30G
+VM_SYS_SIZE=50G
 VM_DATA_SIZE=5G
 VM_VIRTINSTALL_OPTS="${VM_VIRTINSTALL_OPTS}"
 
@@ -39,6 +39,7 @@ IMAGES[rhel10]="packer-uefi-rhel10.qcow2"
 IMAGES[sol114]="packer-uefi-sol114.qcow2"
 IMAGES[sles12]="packer-uefi-sles12sp5.qcow2"
 IMAGES[sles15]="packer-uefi-sles15sp7.qcow2"
+IMAGES[sles16]="packer-uefi-sles16.qcow2"
 IMAGES[windows11]="Windows11_23H2_uefi_Entreprise_Fr_x64.iso"
 IMAGES[truenas]="TrueNAS-13.0-U6.1.iso"
 

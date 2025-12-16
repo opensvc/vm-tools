@@ -148,7 +148,7 @@ function substitute_patterns()
 {
     title Begin:$FUNCNAME 
 
-    local FILES="$VM_ROOT/meta-data $VM_ROOT/user-data"
+    local FILES="$VM_ROOT/meta-data $VM_ROOT/user-data $VM_ROOT/network-config"
 
     sed -i "s@VM_NAME@$VM_NAME@g" $FILES
     sed -i "s@VM_NIC@$VM_NIC@g" $FILES
@@ -173,6 +173,7 @@ function gen_cloud_init_files()
     title Begin:$FUNCNAME 
     local CUSTOMIZE_META_DATA=true
     local CUSTOMIZE_USER_DATA=true
+    local CUSTOMIZE_NETWORK_CONFIG=true
     
     # custom meta-data
     [[ -f $VM_CONFIGS/meta-data ]] && {
@@ -184,6 +185,11 @@ function gen_cloud_init_files()
     [[ -f $VM_CONFIGS/user-data ]] && {
             cp -f $VM_CONFIGS/user-data $VM_ROOT/
             CUSTOMIZE_USER_DATA=false
+    }
+
+    [[ -f $VM_CONFIGS/network-config ]] && {
+            cp -f $VM_CONFIGS/network-config $VM_ROOT/
+            CUSTOMIZE_NETWORK_CONFIG=false
     }
 
     if [ "$CUSTOMIZE_META_DATA" = true ] ; then
@@ -200,6 +206,10 @@ function gen_cloud_init_files()
 	echo >> $VM_ROOT/user-data
     fi
 
+    if [ "$CUSTOMIZE_NETWORK_CONFIG" = true ] ; then
+	[[ "$VM_DISTRO" =~ ^sles16.* ]] && cp -f $TEMPLATES/network-config.sles16 $VM_ROOT/network-config
+    fi
+
     [[ -f $VM_CONFIGS/cloud-init.host.ssh_keys ]] && {
 	    cat $VM_CONFIGS/cloud-init.host.ssh_keys >> $VM_ROOT/user-data
     }
@@ -210,8 +220,10 @@ function gen_cloud_init_files()
 
 function create_seed() {
 	title Begin:$FUNCNAME
+    SEED_OPTS=""
     gen_cloud_init_files
-    genisoimage -input-charset utf-8 -output $VM_ROOT/seed.iso -volid cidata -joliet -rock $VM_ROOT/user-data $VM_ROOT/meta-data || \
+    test -f $VM_ROOT/network-config && SEED_OPTS="$VM_ROOT/network-config"
+    genisoimage -input-charset utf-8 -output $VM_ROOT/seed.iso -volid cidata -joliet -rock $VM_ROOT/user-data $VM_ROOT/meta-data $SEED_OPTS || \
         exiterr "error while creating seed.iso"
     title End:$FUNCNAME
 }
@@ -297,6 +309,7 @@ function execute_virtinstall()
     --ram $VM_RAM \
     --vcpus=$VM_CPU \
     --os-variant $VM_OSVARIANT \
+    --iothreads 1 \
     --noautoconsole \
     --console pty,target_type=serial,log.file=$VM_ROOT/console.log $VM_VIRTINSTALL_OPTS
 

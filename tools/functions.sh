@@ -35,6 +35,7 @@ function get_kvm_osvariant()
         rhel10)   OSVAR="rhel10-unknown" ;;
         sles12)   OSVAR="sles12-unknown" ;;
         sles15)   OSVAR="sle15-unknown" ;;
+        sles16)   OSVAR="sle15-unknown" ;;
         sol114)   OSVAR="solaris11" ;;
         sol10)    OSVAR="solaris10" ;;
     esac

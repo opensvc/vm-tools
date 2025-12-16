@@ -1,0 +1,11 @@
+#cloud-config
+version: 2
+ethernets:
+  enp1s0:
+    addresses:
+      - VM_NET.VM_CID.0.VM_IP/24
+    routes:
+      - to: 0.0.0.0/0
+        via: VM_NET.VM_CID.0.1
+    nameservers:
+      addresses: [8.8.8.8, 1.1.1.1]

@@ -1,0 +1,138 @@
+write_files:
+- path: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+  content: "network: {config: disabled}\n"
+  owner: "root:root"
+  permissions: "0600"
+
+- path: /etc/NetworkManager/system-connections/br-slave-enp1s0.nmconnection
+  permissions: '0600'
+  owner: 'root:root'
+  content: |
+    [connection]
+    id=br-slave-enp1s0
+    uuid=8d78989f-eb40-45d6-bbf6-443d860bc886
+    type=ethernet
+    controller=br-prd
+    interface-name=enp1s0
+    port-type=bridge
+
+    [ethernet]
+
+    [bridge-port]
+
+- path: /etc/NetworkManager/system-connections/br-prd.nmconnection
+  permissions: '0600'
+  owner: 'root:root'
+  content: |
+    [connection]
+    id=br-prd
+    uuid=99306df8-e3ac-43d4-b2b5-21ec955d4ac2
+    type=bridge
+    interface-name=br-prd
+
+    [ethernet]
+
+    [bridge]
+    forward-delay=0
+    stp=false
+
+    [ipv4]
+    address1=VM_NET.VM_CID.0.VM_IP/24
+    gateway=VM_NET.VM_CID.0.1
+    method=manual
+
+    [ipv6]
+    addr-gen-mode=default
+    address1=fd01:2345:6789:VM_2DGCID00::VM_IP/64
+    gateway=fd01:2345:6789:VM_2DGCID00::1
+    method=manual
+
+    [proxy]
+
+- path: /etc/NetworkManager/system-connections/enp2s0.nmconnection
+  permissions: '0600'
+  owner: 'root:root'
+  content: |
+    [connection]
+    id=enp2s0
+    uuid=cc626bc3-d472-45a7-9782-fe0c80cff3f7
+    type=ethernet
+    interface-name=enp2s0
+
+    [ethernet]
+
+    [ipv4]
+    address1=VM_NET.VM_CID.1.VM_IP/24
+    method=manual
+
+    [ipv6]
+    addr-gen-mode=default
+    address1=fd01:2345:6789:VM_2DGCID01::VM_IP/64
+    method=manual
+
+    [proxy]
+
+- path: /etc/NetworkManager/system-connections/enp3s0.nmconnection
+  permissions: '0600'
+  owner: 'root:root'
+  content: |
+    [connection]
+    id=enp3s0
+    uuid=97894740-71ad-47dd-9280-364c9e00ddec
+    type=ethernet
+    interface-name=enp3s0
+
+    [ethernet]
+
+    [ipv4]
+    address1=VM_NET.VM_CID.2.VM_IP/24
+    method=manual
+
+    [ipv6]
+    addr-gen-mode=default
+    address1=fd01:2345:6789:VM_2DGCID02::VM_IP/64
+    method=manual
+
+    [proxy]
+
+- path: /etc/systemd/system/opensvc-qanode-wait-ready.service
+  content: |
+    [Unit]
+    Description=opensvc wait qanode ready
+    After=network-online.target
+    After=time-sync.target
+    After=multi-user.target
+    After=network.target
+    After=blk-availability.service
+    Wants=blk-availability.service
+    
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/touch /etc/opensvc-qa-node-is-ready
+    RemainAfterExit=true
+    
+    [Install]
+    WantedBy=multi-user.target
+
+- path: /root/wait-for-net.sh
+  content: |
+    #!/bin/bash
+    
+    while ! ping -c 3 google.com > /dev/null;
+    do
+    echo "The network is not up yet"
+    sleep 2
+    done
+    
+    echo "The network is up"
+  owner: "root:root"
+  permissions: "0700"
+
+- path: /home/opensvc/pytest.skip.2
+  owner: "opensvc:opensvc"
+  permissions: "0644"
+
+- path: /home/opensvc/pytest.skip.3
+  owner: "opensvc:opensvc"
+  permissions: "0644"
+

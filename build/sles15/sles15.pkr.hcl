@@ -18,12 +18,12 @@ variable "archives_directory" {
 
 variable "vm_template_name" {
   type    = string
-  default = "packer-uefi-sles15sp6.qcow2"
+  default = "packer-uefi-sles15sp7.qcow2"
 }
 
 variable "sles15_iso_file" {
   type    = string
-  default = "SLE-15-SP6-Full-x86_64-GM-Media1.iso"
+  default = "SLE-15-SP7-Full-x86_64-GM-Media1.iso"
 }
 
 variable "suse_key" {
@@ -51,7 +51,7 @@ source "qemu" "custom_image" {
   
   http_directory = "http"
   iso_url   = "file:///data/vdc/build/images/${var.sles15_iso_file}"
-  iso_checksum = "file:file:///data/vdc/build/images/${var.sles15_iso_file}.sha256"
+  iso_checksum = "cd9430420726219f9c73aa7a389b43057e1d9c610d279b7f71d3687c06d8e66c"
   memory = 4096
   
   ssh_password = "opensvcpacker"
@@ -68,8 +68,8 @@ source "qemu" "custom_image" {
   net_device = "virtio-net"
   cpus = 4
   vnc_bind_address = "0.0.0.0"
-  vnc_port_min = "32015"
-  vnc_port_max = "32015"
+  vnc_port_min = "21515"
+  vnc_port_max = "21515"
 
   efi_boot = true
   efi_firmware_code = "/usr/share/OVMF/OVMF_CODE_4M.fd"
@@ -131,23 +131,23 @@ build {
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
     script = "../common/sles-cloud-init.sh"
   }
+  provisioner "shell" {
+    execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
+    expect_disconnect = "true"
+    script          = "../common/reboot.sh"
+  }
   provisioner "breakpoint" {
     disable = true
     note    = "Troubleshooting Breakpoint"
   }
   provisioner "shell" {
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
-    expect_disconnect = "true"
-    script          = "../common/reboot.sh"
-  }
-  provisioner "shell" {
-    execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
     pause_before    = "1m0s"
-    script = "../common/sles-zfs.sh"
+    script = "../common/sles16-zfs.sh"
   }
   provisioner "shell" {
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
-    script = "../common/sles-drbd.sh"
+    script = "../common/sles15-drbd.sh"
   }
   provisioner "shell" {
     inline = [

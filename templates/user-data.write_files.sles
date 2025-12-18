@@ -1,4 +1,9 @@
 write_files:
+- path: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+  content: "network: {config: disabled}\n"
+  owner: "root:root"
+  permissions: "0600"
+
 - path: /etc/sysconfig/network/ifcfg-br-prd
   content: |
     BOOTPROTO='static'

@@ -4,14 +4,14 @@ echo "ZFS Build"
 
 
 echo "Installing SLES build packages dependencies"
-zypper --non-interactive --gpg-auto-import-keys install gcc make autoconf automake libtool rpm-build libtirpc-devel libblkid-devel libuuid-devel libudev-devel openssl-devel zlib-devel libaio-devel libattr-devel  python3 python3-devel python3-setuptools python3-cffi libffi-devel git ncompress libcurl-devel kernel-devel
+zypper --non-interactive --gpg-auto-import-keys install gcc make autoconf automake libtool rpm-build libtirpc-devel libblkid-devel libuuid-devel libudev-devel openssl-devel zlib-devel libaio-devel libattr-devel python3-devel python3-cffi libffi-devel git libcurl-devel kernel-devel
 
 echo "Git cloning ZFS repository"
 git clone https://github.com/openzfs/zfs
 
 echo "Building ZFS"
 cd ./zfs
-git checkout zfs-2.2.4
+git checkout zfs-2.3.5
 
 sh autogen.sh
 
@@ -53,4 +53,3 @@ cd .. && rm -rf zfs
 modinfo zfs | grep ^version || exit 1
 
 exit 0
-

@@ -8,10 +8,10 @@ echo
 
 [[ -f ~opensvc/opensvc-qa.sh ]] && . ~opensvc/opensvc-qa.sh
 
-grep -q ^packer /etc/passwd && {
-    echo "Deleting user packer"
-    userdel -r packer 2>/dev/null
-}
+#grep -q ^packer /etc/passwd && {
+#    echo "Deleting user packer"
+#    userdel -r packer 2>/dev/null
+#}
 
 grep -q '^PasswordAuthentication no' /etc/ssh/sshd_config || {
     echo "Disabling ssh password auth"

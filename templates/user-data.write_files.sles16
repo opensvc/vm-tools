@@ -39,6 +39,7 @@ write_files:
     [ipv4]
     address1=VM_NET.VM_CID.0.VM_IP/24
     gateway=VM_NET.VM_CID.0.1
+    dns=VM_NET.VM_CID.0.1;VM_NET.VM_CID.1.1;
     method=manual
 
     [ipv6]

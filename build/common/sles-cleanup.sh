@@ -54,14 +54,17 @@ do
 	fi
 done
 
+echo "removing NetworkManager configurations"
+test -d /etc/NetworkManager/system-connections && rm -f /etc/NetworkManager/system-connections/*
+
 echo "Remove ssh host keys"
 rm -f /etc/ssh/ssh_host_*
 
 dd if=/dev/zero of=/EMPTY bs=1M || /bin/true
 rm -f /EMPTY
 
-echo "Locking user: packer"
-sudo passwd -l packer
+#echo "Locking user: packer"
+#sudo passwd -l packer
 
 sync; sync
 

@@ -1,1 +1,24 @@
-user-data.run_cmd.sles
+runcmd:
+  - /usr/bin/localectl set-keymap fr
+  - echo "AllowUsers opensvc root" >> /etc/ssh/sshd_config
+  - /root/wait-for-net.sh
+  - curl -o /root/sles-register.sh -sSL https://raw.githubusercontent.com/opensvc/vm-tools/main/build/common/sles-register.sh
+  - sed -i 's@^SUSE_KEY=.*@SUSE_KEY=SUSE_REGISTRATION_KEY@' /root/sles-register.sh
+  - sed -i 's/^SUSE_EMAIL=.*/SUSE_EMAIL=SUSE_ORGANISATION_MAIL/' /root/sles-register.sh
+  - chmod 700 /root/sles-register.sh
+  - test -d /var/log/journal || mkdir -p /var/log/journal
+  - test -d /opt/vm-tools && cd /opt/vm-tools && git pull
+  - TGT="NAS_IP" /opt/vm-tools/build/common/cloud-init/iscsi.sh
+  - TGT="NFS_IP" /opt/vm-tools/build/common/cloud-init/autofs.sh
+  - /opt/vm-tools/build/common/cloud-init/md.sh
+  - /opt/vm-tools/build/common/cloud-init/lvm.sh
+  - /opt/vm-tools/build/common/cloud-init/change_hostid.py
+  - /opt/vm-tools/build/common/cloud-init/net.sh
+  - /opt/vm-tools/build/common/cloud-init/lxc.sh
+  - /opt/vm-tools/build/common/cloud-init/custom.sh
+  - /opt/vm-tools/build/common/cloud-init/cleanup.sh
+  - systemctl enable opensvc-qanode-wait-ready.service
+  - nmcli connection modify "cloud-init enp1s0" connection.autoconnect no
+  - systemctl restart NetworkManager
+  - nmcli connection delete "cloud-init enp1s0"
+  - reboot

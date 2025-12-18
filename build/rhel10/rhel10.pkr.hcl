@@ -159,10 +159,10 @@ build {
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
     script          = "./scripts/zfs.sh"
   }
-  provisioner "shell" {
-    execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
-    script          = "../common/rhel-install-docker.sh"
-  }
+#  provisioner "shell" {
+#    execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
+#    script          = "../common/rhel-install-docker.sh"
+#  }
   provisioner "breakpoint" {
     disable = true
     note    = "this is a breakpoint"

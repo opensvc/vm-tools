@@ -54,6 +54,9 @@ do
 	fi
 done
 
+echo "Remove ssh host keys"
+rm -f /etc/ssh/ssh_host_*
+
 dd if=/dev/zero of=/EMPTY bs=1M || /bin/true
 rm -f /EMPTY
 

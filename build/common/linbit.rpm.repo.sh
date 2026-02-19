@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+#
+
 [[ ${LINBIT_KEY} == "undefined" ]] && {
     echo "Error: variable LINBIT_KEY is not defined"
     exit 1
@@ -12,7 +14,9 @@
 
 . /etc/os-release
 
-typeset -i DISTRO_MAJOR=$(echo ${VERSION_ID} | awk -F'.' '{print $1}')
+typeset -i DISTRO_MAJOR="${VERSION_ID%.*}"
+typeset -i DISTRO_MINOR="${VERSION_ID#*.}"
+
 
 [[ -f /etc/yum.repos.d/linbit.repo ]] && rm -f /etc/yum.repos.d/linbit.repo
 
@@ -33,7 +37,7 @@ rpm -Uvh /dev/shm/linbit-keyring.rpm
 cat > /etc/yum.repos.d/linbit.repo <<EOF
 [drbd-9.0]
 name=LINBIT Packages for drbd-9.0 - \$basearch
-baseurl=https://packages.linbit.com/${LINBIT_KEY}/yum/rhel${DISTRO_MAJOR}/drbd-9.0/\$basearch
+baseurl=https://packages.linbit.com/${LINBIT_KEY}/yum/rhel${DISTRO_MAJOR}.${DISTRO_MINOR}/drbd-9.0/\$basearch
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-linbit
 gpgcheck=1
@@ -42,7 +46,7 @@ priority=90
 
 [drbd-9]
 name=LINBIT Packages for drbd-9 - \$basearch
-baseurl=https://packages.linbit.com/${LINBIT_KEY}/yum/rhel${DISTRO_MAJOR}/drbd-9/\$basearch
+baseurl=https://packages.linbit.com/${LINBIT_KEY}/yum/rhel${DISTRO_MAJOR}.${DISTRO_MINOR}/drbd-9/\$basearch
 enabled=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-linbit
 gpgcheck=1

@@ -13,6 +13,8 @@ echo '==> Updating Red Hat packages'
     exit 0
 }
 
+dnf -y update redhat-release
+
 dnf -y update
 
 echo '==> Packages Successfully updated'

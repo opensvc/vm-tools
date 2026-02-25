@@ -2,8 +2,8 @@
 
 function install_golang
 {
-    version=${1:-1.23.7}
-    url=https://dl.google.com/go/go$version.linux-amd64.tar.gz
+    version=${1:-1.26.0}
+    url=https://go.dev/dl/go${version}.linux-amd64.tar.gz
 
     echo "Installing golang $version"
 

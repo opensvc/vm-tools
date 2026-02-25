@@ -28,12 +28,12 @@ do
         fi
         [[ -f ./output-custom_image/efivars.fd ]] && {
             echo "Copying UEFI vars $file to /var/lib/libvirt/images/$img.efivars.fd"
-            cp ./output-custom_image/efivars.fd /var/lib/libvirt/images/$img.efivars.fd
+            cp ./output-custom_image/efivars.fd /var/lib/libvirt/images/$img.efivars.fd && rm -f ./output-custom_image/efivars.fd
         }
         for file in $(cd ./output-custom_image && ls -1 *.qcow2)
         do
             echo "Copying image $file to KVM_IMAGES_ROOT/$file"
-            cp -f ./output-custom_image/$file /var/lib/libvirt/images/
+            cp -f ./output-custom_image/$file /var/lib/libvirt/images/ && rm -f ./output-custom_image/$file
         done
         cd -
     }

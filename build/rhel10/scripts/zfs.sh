@@ -12,7 +12,7 @@ git clone https://github.com/openzfs/zfs
 
 echo "Building ZFS"
 cd ./zfs
-git checkout zfs-2.3.3
+git checkout zfs-2.4.0
 
 sh autogen.sh
 

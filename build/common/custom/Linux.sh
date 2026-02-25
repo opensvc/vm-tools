@@ -3,7 +3,7 @@
 function install_golang
 {
     version=${1:-1.26.0}
-    url=https://go.dev/dl/go${version}.linux-amd64.tar.gz
+    url=https://dl.google.com/go/go${version}.linux-amd64.tar.gz
 
     echo "Installing golang $version"
 
@@ -13,7 +13,7 @@ function install_golang
         mkdir $basedir || exit 1
 
     echo "download to $basedir: curl -s -o - $url | tar xzf -"
-    cd $basedir && curl -s --follow -o - $url | tar xzf - || exit 1
+    cd $basedir && curl -s -o - $url | tar xzf - || exit 1
 
     echo "installing go and gofmt to /usr/bin"
     ln -sf $basedir/go/bin/go /usr/bin/go || exit 1

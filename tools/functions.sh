@@ -63,3 +63,17 @@ check_vg_space() {
         return 1
     fi
 }
+
+function need_network_config()
+{
+    local candidate="$1"
+    local distros=("u2004" "u2204" "u2404" "rhel10" "sles16")
+
+    for v in "${distros[@]}"; do
+        if [[ "$v" == "$candidate" ]]; then
+            return 0
+        fi
+    done
+
+    return 1
+}

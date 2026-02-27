@@ -207,7 +207,7 @@ function gen_cloud_init_files()
     fi
 
     if [ "$CUSTOMIZE_NETWORK_CONFIG" = true ] ; then
-	[[ "$VM_DISTRO" =~ ^sles16.* ]] && cp -f $TEMPLATES/network-config.sles16 $VM_ROOT/network-config
+	need_network_config "$VM_DISTRO" && cp -f $TEMPLATES/network-config $VM_ROOT/network-config
     fi
 
     [[ -f $VM_CONFIGS/cloud-init.host.ssh_keys ]] && {

@@ -3,12 +3,7 @@ runcmd:
   - echo "AllowUsers opensvc root" >> /etc/ssh/sshd_config
   - rm -f /etc/sysconfig/network-scripts/ifcfg*
   - systemctl stop NetworkManager
-  - rm -f /etc/NetworkManager/system-connections/enp0s2*
-  - ip link set enp1s0 down
-  - ip link set enp2s0 down
-  - ip link set enp3s0 down
-  - ip link set br-prd down
-  - rm -f /run/NetworkManager/system-connections/*
+  - rm -f /etc/NetworkManager/system-connections/cloud-init-* /etc/NetworkManager/system-connections/enp0s2* /run/NetworkManager/system-connections/*
   - systemctl restart NetworkManager
   - /root/wait-for-net.sh
   - curl -o /root/rhel-register.sh -sSL https://raw.githubusercontent.com/opensvc/vm-tools/main/build/common/rhel-register.sh

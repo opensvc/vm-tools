@@ -38,10 +38,11 @@ write_files:
     method=manual
     
     [ipv6]
-    address1=fd01:2345:6789:VM_2DGCID00::VM_IP/64,fd01:2345:6789:VM_2DGCID00::1
+    address1=fd01:2345:6789:VM_2DGCID00::VM_IP/64
     method=auto
     never-default=true
     addr-gen-mode=stable-privacy
+    accept-ra=no
     
     [proxy]
   owner: "root:root"
@@ -66,6 +67,7 @@ write_files:
     method=auto
     never-default=true
     addr-gen-mode=stable-privacy
+    accept-ra=no
     
     [proxy]
   owner: "root:root"
@@ -90,6 +92,49 @@ write_files:
     method=auto
     never-default=true
     addr-gen-mode=stable-privacy
+    accept-ra=no
+
+    [proxy]
+  owner: "root:root"
+  permissions: "0600"
+
+- path: /etc/NetworkManager/system-connections/enp4s0.nmconnection
+  content: |
+    [connection]
+    id=enp4s0
+    type=ethernet
+    interface-name=enp4s0
+    master=br-vrack
+    slave-type=bridge
+
+    [ethernet]
+    mac-address=22:23:24:VM_HEXCID:60:VM_IP
+
+    [bridge-port]
+  owner: "root:root"
+  permissions: "0600"
+
+- path: /etc/NetworkManager/system-connections/br-vrack.nmconnection
+  content: |
+    [connection]
+    id=br-vrack
+    type=bridge
+    interface-name=br-vrack
+
+    [ethernet]
+
+    [bridge]
+    stp=false
+
+    [ipv4]
+    method=disabled
+
+    [ipv6]
+    address1=OSVC_IPV6_VRACK_PREFIX:2345:6789:VM_2DGCID00:VM_IP/64
+    gateway=OSVC_IPV6_VRACK_NET
+    method=manual
+    addr-gen-mode=stable-privacy
+    accept-ra=no
 
     [proxy]
   owner: "root:root"

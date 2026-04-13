@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -a
+set -x
 
 [[ ! -f /etc/os-release ]] && exit 1
 

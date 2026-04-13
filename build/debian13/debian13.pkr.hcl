@@ -23,7 +23,12 @@ variable "vm_template_name" {
 
 variable "debian_iso_file" {
   type    = string
-  default = "debian-13.1.0-amd64-DVD-1.iso"
+  default = "debian-13.4.0-amd64-DVD-1.iso"
+}
+
+variable "LINBIT_KEY" {
+  type    = string
+  default = "undefined"
 }
 
 source "qemu" "custom_image" {
@@ -38,7 +43,7 @@ boot_command = [
   
   http_directory = "http"
   iso_url   = "../images/${var.debian_iso_file}"
-  iso_checksum = "sha256:fd941eefaff97349e81f82090c0b32eef7b96518e1361666052e11f39b02711d"
+  iso_checksum = "sha256:e41eeaffa4fdd64fbf07fc8b0d18a1b5f15ba9743a72c222008f8fd0b6463355"
   memory = 4096
   
   ssh_password = "opensvcpacker"
@@ -125,8 +130,11 @@ build {
     note    = "this is a breakpoint"
   }
   provisioner "shell" {
+    environment_vars = [
+     "LINBIT_KEY=${var.LINBIT_KEY}"
+    ]
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
-    script          = "./scripts/drbd.sh"
+    script = "../common/linbit.apt.repo.sh"
   }
   provisioner "shell" {
     inline = [

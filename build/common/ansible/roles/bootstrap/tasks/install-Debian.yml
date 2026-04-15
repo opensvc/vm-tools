@@ -131,6 +131,16 @@
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
         (ansible_distribution_major_version|int >= 24) 
 
+- name: install package for Debian13+
+  apt:
+    name:  "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - python3-setuptools
+  when: (ansible_facts['distribution'] == "Debian" ) and
+        (ansible_distribution_major_version|int >= 13)
+
 - name: install package for ubuntu old
   apt:
     name:  "{{ packages }}"

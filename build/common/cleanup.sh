@@ -31,6 +31,9 @@ apt-get -y purge command-not-found-data || true;
 echo "removing debug package"
 apt -y purge linux-image-`uname -r`-dbg || true;
 
+echo "removing overloaded ansible ppa reference"
+rm -f /etc/apt/sources.list.d/ansible* || true;
+
 # Exclude the files we don't need w/o uninstalling linux-firmware
 echo "Setup dpkg excludes for linux-firmware"
 cat <<_EOF_ | cat >> /etc/dpkg/dpkg.cfg.d/excludes

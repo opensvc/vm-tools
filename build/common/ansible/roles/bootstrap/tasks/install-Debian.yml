@@ -53,7 +53,7 @@
       - python-cryptography
       - python-requests
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        ansible_distribution_major_version|int < 20
+        ansible_facts['distribution_major_version']|int < 20
 
 - name: install packages for old debian
   apt:
@@ -65,7 +65,7 @@
       - python-cryptography
       - python-requests
   when: (ansible_facts['distribution'] == "Debian" ) and
-        ansible_distribution_major_version|int <= 10
+        ansible_facts['distribution_major_version']|int <= 10
 
 - name: install packages for deb 11+
   apt:
@@ -75,7 +75,7 @@
     packages:
       - python3-pycryptodome
   when: (ansible_facts['distribution'] == "Debian" ) and
-        ansible_distribution_major_version|int >= 11
+        ansible_facts['distribution_major_version']|int >= 11
 
 - name: install packages for deb 12+
   apt:
@@ -85,7 +85,7 @@
     packages:
       - btop
   when: (ansible_facts['distribution'] == "Debian" ) and
-        ansible_distribution_major_version|int >= 12
+        ansible_facts['distribution_major_version']|int >= 12
 
 - name: install package for ubuntu 20.04
   apt:
@@ -98,7 +98,7 @@
       - python-is-python3
       - xauth
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int >= 20)
+        (ansible_facts['distribution_major_version']|int >= 20)
 
 - name: install package for ubuntu
   apt:
@@ -113,8 +113,8 @@
       - python-setuptools
       - python3-setuptools
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int >= 18) and
-        (ansible_distribution_major_version|int <= 22)
+        (ansible_facts['distribution_major_version']|int >= 18) and
+        (ansible_facts['distribution_major_version']|int <= 22)
 
 - name: install package for ubuntu 24+
   apt:
@@ -129,7 +129,7 @@
       - zfsutils-linux
       - python3-setuptools
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int >= 24) 
+        (ansible_facts['distribution_major_version']|int >= 24) 
 
 - name: install package for Debian13+
   apt:
@@ -139,7 +139,7 @@
     packages:
       - python3-setuptools
   when: (ansible_facts['distribution'] == "Debian" ) and
-        (ansible_distribution_major_version|int >= 13)
+        (ansible_facts['distribution_major_version']|int >= 13)
 
 - name: install package for ubuntu old
   apt:
@@ -153,7 +153,7 @@
       - python-setuptools
       - python3-setuptools
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int < 18)
+        (ansible_facts['distribution_major_version']|int < 18)
 
 - name: install packages for debian
   apt:
@@ -198,14 +198,14 @@
     enabled: true
     state: started
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int >= 20)
+        (ansible_facts['distribution_major_version']|int >= 20)
 
 - name: iptables forward accept by default
   ansible.builtin.iptables:
     chain: FORWARD
     policy: ACCEPT
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int >= 20)
+        (ansible_facts['distribution_major_version']|int >= 20)
 
 - name: save iptables rules
   ansible.builtin.command:
@@ -213,4 +213,4 @@
       - /etc/init.d/netfilter-persistent
       - save
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_distribution_major_version|int >= 20)
+        (ansible_facts['distribution_major_version']|int >= 20)

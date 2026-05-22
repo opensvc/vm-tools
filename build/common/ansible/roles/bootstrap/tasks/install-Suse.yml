@@ -47,7 +47,7 @@
       - bridge-utils
       - python-cryptography
   when:
-    - (ansible_distribution_major_version|int == 12)
+    - (ansible_facts['distribution_major_version']|int == 12)
 
 - name: install common packages for suse 15
   zypper:
@@ -63,7 +63,7 @@
       - debootstrap
       - python3-virtualenv
   when:
-    - (ansible_distribution_major_version|int == 15)
+    - (ansible_facts['distribution_major_version']|int == 15)
 
 - name: enable and start dockerd
   ansible.builtin.systemd:
@@ -77,4 +77,4 @@
     dest: "/usr/share/lxc/templates/lxc-ubuntu"
     mode: 0755
   when:
-    - (ansible_distribution_major_version|int >= 15)
+    - (ansible_facts['distribution_major_version']|int >= 15)

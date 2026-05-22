@@ -15,20 +15,20 @@
       - cryptsetup
       - links
       - ntp
-  when: (ansible_distribution_major_version|int < 8)
+  when: (ansible_facts['distribution_major_version']|int < 8)
 
 - name: remove epel pkg if exist
   shell: rpm -qa|grep "epel.*release"|xargs yum -y remove
   when:
-    - (ansible_distribution == "RedHat")
-    - (ansible_distribution_major_version|int >= 8)
+    - (ansible_facts['distribution'] == "RedHat")
+    - (ansible_facts['distribution_major_version']|int >= 8)
 
 - rpm_key:
     state: present
-    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_facts['distribution_major_version'] }}
   when:
-    - (ansible_distribution == "RedHat")
-    - (ansible_distribution_major_version|int <= 9)
+    - (ansible_facts['distribution'] == "RedHat")
+    - (ansible_facts['distribution_major_version']|int <= 9)
 
 - name: Add epel 7 repository (archived repo)
   ansible.builtin.yum_repository:
@@ -36,24 +36,24 @@
     description: EPEL YUM repo
     baseurl: https://dl.fedoraproject.org/pub/archive/epel/7/x86_64/
   when:
-    - (ansible_distribution == "RedHat")
-    - (ansible_distribution_major_version|int == 7)
+    - (ansible_facts['distribution'] == "RedHat")
+    - (ansible_facts['distribution_major_version']|int == 7)
 
 - name: install epel channel for rhel 8
   ansible.builtin.dnf:
     name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm'
     state: present
   when:
-    - (ansible_distribution == "RedHat")
-    - (ansible_distribution_major_version|int == 8)
+    - (ansible_facts['distribution'] == "RedHat")
+    - (ansible_facts['distribution_major_version']|int == 8)
 
 - name: install epel channel for rhel 9
   ansible.builtin.dnf:
     name: 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm'
     state: present
   when:
-    - (ansible_distribution == "RedHat")
-    - (ansible_distribution_major_version|int == 9)
+    - (ansible_facts['distribution'] == "RedHat")
+    - (ansible_facts['distribution_major_version']|int == 9)
 
 - name: install epel channel for rhel 10
   ansible.builtin.dnf:
@@ -61,8 +61,8 @@
     disable_gpg_check: true
     state: present
   when:
-    - (ansible_distribution == "RedHat")
-    - (ansible_distribution_major_version|int == 10)
+    - (ansible_facts['distribution'] == "RedHat")
+    - (ansible_facts['distribution_major_version']|int == 10)
 
 - name: install common packages for rhel/centos/fedora (ver < 8)
   yum:
@@ -96,7 +96,7 @@
       - socat
       - vim
   when:
-    - (ansible_distribution_major_version|int < 8)
+    - (ansible_facts['distribution_major_version']|int < 8)
 
 - name: install common packages for rhel/centos/fedora (ver = 8)
   yum:
@@ -125,7 +125,7 @@
       - sg3_utils
       - socat
   when:
-    - (ansible_distribution_major_version|int == 8)
+    - (ansible_facts['distribution_major_version']|int == 8)
 
 - name: remove packages for rhel (ver = 8)
   yum:
@@ -136,7 +136,7 @@
       - setroubleshoot-server
       - setroubleshoot-plugins
   when:
-    - (ansible_distribution_major_version|int == 8)
+    - (ansible_facts['distribution_major_version']|int == 8)
 
 - name: install common packages for rhel/centos/fedora (ver = 9)
   yum:
@@ -164,7 +164,7 @@
       - socat
       - systemd-resolved
   when:
-    - (ansible_distribution_major_version|int == 9)
+    - (ansible_facts['distribution_major_version']|int == 9)
 
 - name: install common packages for rhel/centos/fedora (ver = 10)
   yum:
@@ -188,14 +188,14 @@
       - socat
       - systemd-resolved
   when:
-    - (ansible_distribution_major_version|int == 10)
+    - (ansible_facts['distribution_major_version']|int == 10)
 
 - name: ensure systemd-resolved is enabled
   ansible.builtin.systemd:
     name: systemd-resolved
     enabled: yes
   when:
-    - (ansible_distribution_major_version|int >= 9)
+    - (ansible_facts['distribution_major_version']|int >= 9)
 
 - name: install common packages for all distros (stage 2)
   package:
@@ -214,7 +214,7 @@
     enabled: no
     masked: yes
   when:
-    - (ansible_distribution_major_version|int >= 8)
+    - (ansible_facts['distribution_major_version']|int >= 8)
 
 - name: Comment existing short-name-mode lines
   ansible.builtin.lineinfile:
@@ -239,11 +239,11 @@
   ansible.builtin.command: >
     sed -i 's@# use_devicesfile = 1@use_devicesfile = 0@' /etc/lvm/lvm.conf
   when:
-    - (ansible_distribution_major_version|int >= 9)
+    - (ansible_facts['distribution_major_version']|int >= 9)
 
 - name: Delete system.devices
   ansible.builtin.file:
     path: /etc/lvm/devices/system.devices
     state: absent
   when:
-    - (ansible_distribution_major_version|int >= 9)
+    - (ansible_facts['distribution_major_version']|int >= 9)

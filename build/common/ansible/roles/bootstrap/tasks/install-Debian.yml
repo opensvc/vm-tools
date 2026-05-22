@@ -116,7 +116,7 @@
         (ansible_facts['distribution_major_version']|int >= 18) and
         (ansible_facts['distribution_major_version']|int <= 22)
 
-- name: install package for ubuntu 24+
+- name: install package for ubuntu 24
   apt:
     name:  "{{ packages }}"
     state: present
@@ -129,7 +129,22 @@
       - zfsutils-linux
       - python3-setuptools
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
-        (ansible_facts['distribution_major_version']|int >= 24) 
+        (ansible_facts['distribution_major_version']|int == 24) 
+
+- name: install package for ubuntu 26
+  apt:
+    name:  "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - btop
+      - docker.io
+      - lxc
+      - lxc-templates
+      - zfsutils-linux
+      - python3-setuptools
+  when: (ansible_facts['distribution'] == "Ubuntu" ) and
+        (ansible_facts['distribution_major_version']|int == 26) 
 
 - name: install package for Debian13+
   apt:

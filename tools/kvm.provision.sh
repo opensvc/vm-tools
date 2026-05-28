@@ -39,6 +39,12 @@ VM_SSHPORT=${PORT_FWD[$NET]}$VM_2DGCID$VM_IP
     let VM_VNCPORT=$VM_SSHPORT+50
 }
 
+# option 1: set VM_VNCIP='0.0.0.0' before vm provisioning
+# option 2: use socat as tcp forwarder
+#   user@hv.demo.com:~ /usr/bin/socat TCP-LISTEN:54321,fork,reuseaddr TCP:127.0.0.1:$VM_VNCPORT &
+#   user@laptop:~ remmina vnc://hv.demo.com:54321
+VM_VNCIP=${VM_VNCIP:-127.0.0.1}
+
 for FILE in environment secrets
 do
     [[ -f $VM_CONFIGS/$FILE ]] && {
@@ -303,7 +309,7 @@ function execute_virtinstall()
     echo virt-install \
     --connect qemu:///system \
     --audio $VM_AUDIO \
-    --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=0.0.0.0,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
+    --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=$VM_VNCIP,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
     --virt-type kvm \
     --name $VM_NAME \
     --ram $VM_RAM \
@@ -316,7 +322,7 @@ function execute_virtinstall()
     virt-install \
     --connect qemu:///system \
     --audio $VM_AUDIO \
-    --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=0.0.0.0,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
+    --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=$VM_VNCIP,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
     --virt-type kvm \
     --name $VM_NAME \
     --ram $VM_RAM \

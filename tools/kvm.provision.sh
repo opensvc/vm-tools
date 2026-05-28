@@ -372,10 +372,10 @@ prepare
         create_ci_vmdisks
         #VM_VIRTINSTALL_OPTS="$VM_VIRTINSTALL_OPTS --disk path=$VM_ROOT/system.qcow2,format=qcow2,driver.io=threads,driver.cache=writeback --disk path=$VM_ROOT/data.qcow2,format=qcow2,driver.io=threads,driver.cache=writeback --disk $VM_ROOT/seed.iso,device=cdrom"
         #VM_VIRTINSTALL_OPTS="$VM_VIRTINSTALL_OPTS --disk path=$VM_ROOT/system.qcow2,format=qcow2,driver.iothread=1 --disk path=$VM_ROOT/data.qcow2,format=qcow2,driver.iothread=1 --disk $VM_ROOT/seed.iso,device=cdrom"
-        VM_VIRTINSTALL_OPTS="$VM_VIRTINSTALL_OPTS --disk path=$VM_ROOT/system.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD} --disk path=$VM_ROOT/data.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD} --disk $VM_ROOT/seed.iso,device=cdrom"
+        VM_VIRTINSTALL_OPTS="$VM_VIRTINSTALL_OPTS --disk path=$VM_ROOT/system.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD},driver.iothread=1 --disk path=$VM_ROOT/data.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD},driver.iothread=1 --disk $VM_ROOT/seed.iso,device=cdrom"
     } || {
         create_std_vmdisks
-        VM_VIRTINSTALL_OPTS="$VM_VIRTINSTALL_OPTS --disk path=$VM_ROOT/system.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD} --disk path=$VM_ROOT/data.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD} --cdrom $KVM_IMAGES_ROOT/$VM_BASE_IMAGE"
+        VM_VIRTINSTALL_OPTS="$VM_VIRTINSTALL_OPTS --disk path=$VM_ROOT/system.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD},driver.iothread=1 --disk path=$VM_ROOT/data.qcow2,format=qcow2,driver.cache=${VM_DRIVER_CACHE},driver.io=${VM_DRIVER_IO},driver.discard=${VM_DRIVER_DISCARD},driver.iothread=1 --cdrom $KVM_IMAGES_ROOT/$VM_BASE_IMAGE"
     }
 }
 create_seed

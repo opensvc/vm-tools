@@ -29,6 +29,7 @@ function get_kvm_osvariant()
         ubuntu20) OSVAR="ubuntu20.04" ;;
         ubuntu22) OSVAR="ubuntu22.04" ;;
         ubuntu24) OSVAR="ubuntu24.04" ;;
+        ubuntu26) OSVAR="ubuntu25.10" ;;
         rhel7)    OSVAR="rhel7-unknown" ;;
         rhel8)    OSVAR="rhel8-unknown" ;;
         rhel9)    OSVAR="rhel9-unknown" ;;

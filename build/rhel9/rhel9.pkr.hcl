@@ -23,7 +23,7 @@ variable "vm_template_name" {
 
 variable "rhel_iso_file" {
   type    = string
-  default = "rhel-9.6-x86_64-dvd.iso"
+  default = "rhel-9.8-x86_64-dvd.iso"
 }
 
 variable "RHN_ORG" {
@@ -54,7 +54,7 @@ source "qemu" "custom_image" {
 
   http_directory = "http"
   iso_url   = "../images/${var.rhel_iso_file}"
-  iso_checksum = "sha256:febcc1359fd68faceff82d7eed8d21016e022a17e9c74e0e3f9dc3a78816b2bb"
+  iso_checksum = "sha256:c0dd53b73406b85b40d6168d1748e605d71361b2992d282c408b7d7d2e1d2c80"
   memory = 4096
 
   ssh_password = "opensvcpacker"

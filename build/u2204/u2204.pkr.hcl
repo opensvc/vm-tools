@@ -65,7 +65,7 @@ source "qemu" "custom_image" {
   headless = true
   accelerator = "kvm"
   format = "qcow2"
-  disk_size = "10G"
+  disk_size = "20G"
   disk_interface = "virtio"
   net_device = "virtio-net"
   cpus = 4

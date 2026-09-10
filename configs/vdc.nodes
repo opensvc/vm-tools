@@ -353,6 +353,10 @@ c10lxc1 10 91 10
 c10lxc2 10 92 10
 c10lxc3 10 93 10
 c10lxc4 10 94 10
+c10.http.public.cname 10 2 10
+c10.sni1.public.cname 10 2 10
+c10.sni2.public.cname 10 2 10
+c10.https.public.cname 10 2 10
 # 11 10
 c11envoy1 11 2 10
 c11envoy2 11 3 10

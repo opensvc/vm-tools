@@ -3,6 +3,7 @@ runcmd:
   - echo "AllowUsers opensvc root" >> /etc/ssh/sshd_config
   - systemctl restart sshd
   - rm -f /etc/sysconfig/network-scripts/ifcfg-ens* /etc/sysconfig/network-scripts/ifcfg-eth*
+  - systemctl stop NetworkManager
   - ip link set enp1s0 down
   - ip link set enp2s0 down
   - ip link set enp3s0 down

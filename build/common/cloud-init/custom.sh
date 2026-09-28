@@ -28,4 +28,13 @@ net.ipv6.conf.all.ndisc_notify = 1
 net.ipv6.conf.default.ndisc_notify = 1
 EOF
 
+# systemd-resolved tunables
+# disable LLMNR and mDNS
+mkdir -p /etc/systemd/resolved.conf.d
+cat >| /etc/systemd/resolved.conf.d/99-opensvc-no-llmnr-mdns.conf <<EOF
+[Resolve]
+LLMNR=no
+MulticastDNS=no
+EOF
+
 exit 0

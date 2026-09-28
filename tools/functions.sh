@@ -68,7 +68,7 @@ check_vg_space() {
 function need_network_config()
 {
     local candidate="$1"
-    local distros=("ubuntu20" "ubuntu22" "ubuntu24" "ubuntu26" "rhel10" "sles16" "debian13")
+    local distros=("ubuntu20" "ubuntu22" "ubuntu24" "ubuntu26" "rhel10" "sles16" "debian12" "debian13")
 
     for v in "${distros[@]}"; do
         if [[ "$v" == "$candidate" ]]; then

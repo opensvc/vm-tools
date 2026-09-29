@@ -134,7 +134,7 @@ build {
     script = "../common/linbit.apt.repo.sh"
   }
   provisioner "breakpoint" {
-    disable = false
+    disable = true
     note    = "this is a breakpoint"
   }
   provisioner "shell" {

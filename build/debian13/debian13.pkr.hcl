@@ -23,7 +23,7 @@ variable "vm_template_name" {
 
 variable "debian_iso_file" {
   type    = string
-  default = "debian-13.4.0-amd64-DVD-1.iso"
+  default = "debian-13.7.0-amd64-DVD-1.iso"
 }
 
 variable "LINBIT_KEY" {
@@ -43,7 +43,7 @@ boot_command = [
   
   http_directory = "http"
   iso_url   = "../images/${var.debian_iso_file}"
-  iso_checksum = "sha256:e41eeaffa4fdd64fbf07fc8b0d18a1b5f15ba9743a72c222008f8fd0b6463355"
+  iso_checksum = "sha256:347b6c67a3cc0b7ddb60b178f683470c4e2b7ac426c996d9337a2ff36c1a32d2"
   memory = 4096
   
   ssh_password = "opensvcpacker"

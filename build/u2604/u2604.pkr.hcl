@@ -23,7 +23,7 @@ variable "vm_template_name" {
 
 variable "ubuntu_iso_file" {
   type    = string
-  default = "ubuntu-26.04-live-server-amd64.iso"
+  default = "ubuntu-26.04.1-live-server-amd64.iso"
 }
 
 variable "LINBIT_KEY" {
@@ -53,7 +53,7 @@ source "qemu" "custom_image" {
   http_directory = "http"
   #iso_url   = "https://ubuntu.mirrors.ovh.net/ubuntu-releases/26.04/${var.ubuntu_iso_file}"
   iso_url   = "../images/${var.ubuntu_iso_file}"
-  iso_checksum = "file:https://last-public-canonical-ubuntu-releases.snap.mirrors.ovh.net/26.04/SHA256SUMS"
+  iso_checksum = "file:https://ubuntu.mirrors.ovh.net/ubuntu-releases/26.04.1/SHA256SUMS"
   memory = 4096
   
   ssh_password = "opensvcpacker"

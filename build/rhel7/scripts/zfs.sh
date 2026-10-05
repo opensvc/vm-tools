@@ -46,6 +46,14 @@ zfs
 drbd
 EOF
 
+# the root filesystem is not on zfs: keep the zfs dracut module out of the
+# initramfs. Its setup fails with the distro dracut (mark_hostonly missing on
+# rhel7, installkernel error on rhel9), breaking kernel updates and
+# fips-mode-setup
+cat - <<EOF > /etc/dracut.conf.d/90-omit-zfs.conf
+omit_dracutmodules+=" zfs "
+EOF
+
 
 # cleanup
 cd .. && rm -rf zfs

@@ -8,7 +8,11 @@ echo
 
 [[ -f ~opensvc/opensvc-qa.sh ]] && . ~opensvc/opensvc-qa.sh
 
-ROOTVG=$(lvs --noheadings -o name,vg_name 2>/dev/null | grep -Ev "c[0-9]{1,2}svc.*|cluster|scsi3"  | grep -Ew 'root|ubuntu-vg' | awk '{print $2}' | sort -u)
+# vg of the root filesystem, designated by its uuid: a shared lun may carry
+# another vg with the same name (ex: a leftover ubuntu-vg)
+ROOTDEV=$(findmnt -no SOURCE /)
+ROOTVG=$(lvs --noheadings -o vg_name "${ROOTDEV}" 2>/dev/null | tr -d ' ')
+ROOTVGUUID=$(lvs --noheadings -o vg_uuid "${ROOTDEV}" 2>/dev/null | tr -d ' ')
 
 grep -q 'use_lvmetad = 1' /etc/lvm/lvm.conf || {
 echo "Disable lvmetad"
@@ -41,10 +45,12 @@ grep ' / ' /proc/mounts | grep -q btrfs && {
     exit 0
 }
 
-if [ ! -z ${ROOTVG} ]
+# the root vg must be activable with volume_list, else any regenerated
+# initramfs (kernel update, fips) can not activate the root lv at boot
+if [ -n "${ROOTVGUUID}" ]
 then
-	echo "Add tag local to rootvg"
-	vgchange --addtag local ${ROOTVG}
+	echo "Add tag local to rootvg ${ROOTVG} (${ROOTVGUUID})"
+	vgchange --addtag local --select "vg_uuid=${ROOTVGUUID}" || exit 1
 else
     echo "ROOTVG is empty. Exiting."
     exit 1

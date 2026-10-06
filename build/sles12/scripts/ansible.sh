@@ -2,7 +2,7 @@
 
 echo "--- Begin ansible.sh ---"
 
-zypper --non-interactive --gpg-auto-import-keys python-pip
+zypper --non-interactive --gpg-auto-import-keys install python-pip
 
 pip install ansible==2.9.2
 

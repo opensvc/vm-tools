@@ -23,17 +23,25 @@ variable "vm_template_name" {
 
 variable "sles12_iso_file" {
   type    = string
-  default = "SLE-12-SP5-Server-DVD-x86_64-GM-DVD1.iso"
+  default = "SLE-12-SP5-Server-DVD-x86_64-Boothole-Respin-DVD1.iso"
 }
 
 variable "suse_key" {
-  type    = string
-  default = "undefined"
+  type      = string
+  default   = "undefined"
+  sensitive = true
 }
 
 variable "suse_email" {
-  type    = string
-  default = "undefined"
+  type      = string
+  default   = "undefined"
+  sensitive = true
+}
+
+variable "LINBIT_KEY" {
+  type      = string
+  default   = "undefined"
+  sensitive = true
 }
 
 source "qemu" "custom_image" {
@@ -52,7 +60,7 @@ source "qemu" "custom_image" {
   
   http_directory = "http"
   iso_url   = "file:///data/vdc/build/images/${var.sles12_iso_file}"
-  iso_checksum = "file:file:///data/vdc/build/images/${var.sles12_iso_file}.sha256"
+  iso_checksum = "a8096868c687fbd82766603958a678194f3ec9becb4c945d9d0a46544b4cd674"
   memory = 4096
   
   ssh_password = "opensvcpacker"
@@ -149,8 +157,11 @@ build {
     script = "../common/sles-zfs.sh"
   }
   provisioner "shell" {
+    environment_vars = [
+      "LINBIT_KEY=${var.LINBIT_KEY}"
+    ]
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
-    script = "../common/sles-drbd.sh"
+    script = "../common/linbit.zypper.repo.sh"
   }
   provisioner "shell" {
     inline = [

@@ -27,13 +27,21 @@ variable "sles15_iso_file" {
 }
 
 variable "suse_key" {
-  type    = string
-  default = "undefined"
+  type      = string
+  default   = "undefined"
+  sensitive = true
 }
 
 variable "suse_email" {
-  type    = string
-  default = "undefined"
+  type      = string
+  default   = "undefined"
+  sensitive = true
+}
+
+variable "LINBIT_KEY" {
+  type      = string
+  default   = "undefined"
+  sensitive = true
 }
 
 source "qemu" "custom_image" {
@@ -146,8 +154,11 @@ build {
     script = "../common/sles16-zfs.sh"
   }
   provisioner "shell" {
+    environment_vars = [
+      "LINBIT_KEY=${var.LINBIT_KEY}"
+    ]
     execute_command = "echo 'opensvcpacker' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
-    script = "../common/sles15-drbd.sh"
+    script = "../common/linbit.zypper.repo.sh"
   }
   provisioner "shell" {
     inline = [

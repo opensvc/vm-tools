@@ -29,16 +29,19 @@ variable "rhel_iso_file" {
 variable "RHN_ORG" {
   type    = string
   default = "undefined"
+  sensitive = true
 }
 
 variable "RHN_KEY" {
   type    = string
-  default = "undefine" 
+  default = "undefine"
+  sensitive = true
 }
 
 variable "LINBIT_KEY" {
   type    = string
   default = "undefined"
+  sensitive = true
 }
 
 source "qemu" "custom_image" {

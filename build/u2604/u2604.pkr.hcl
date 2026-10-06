@@ -29,6 +29,7 @@ variable "ubuntu_iso_file" {
 variable "LINBIT_KEY" {
   type    = string
   default = "undefined"
+  sensitive = true
 }
 
 source "qemu" "custom_image" {

@@ -13,7 +13,8 @@ packer {
 
 variable "LINBIT_KEY" {
   type    = string
-  default = "undefined" 
+  default = "undefined"
+  sensitive = true
 }
 
 variable "archives_directory" {

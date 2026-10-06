@@ -1,6 +1,8 @@
 runcmd:
   - /usr/bin/localectl set-keymap fr
   - echo "AllowUsers opensvc root" >> /etc/ssh/sshd_config
+  - [touch, /etc/cloud/cloud-init.disabled]
+  - zypper --non-interactive --no-refresh remove cloud-init
   - /root/wait-for-net.sh
   - curl -o /root/sles-register.sh -sSL https://raw.githubusercontent.com/opensvc/vm-tools/main/build/common/sles-register.sh
   - sed -i 's@^SUSE_KEY=.*@SUSE_KEY=SUSE_REGISTRATION_KEY@' /root/sles-register.sh

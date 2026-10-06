@@ -1,0 +1,101 @@
+{
+  "product": {
+    "id": "SLES"
+  },
+  "hostname": {
+    "static": "packer-sles16"
+  },
+  "localization": {
+    "language": "en_US.UTF-8",
+    "keyboard": "fr",
+    "timezone": "Europe/Paris"
+  },
+  "root": {
+    "hashedPassword": true,
+    "password": "$6$Xau2M80mwJjav/F.$8tZDBsAgqjyxiolFvQbv7CqOIxA3V01/ENP.a3UbpsdVqPOy1YQsHOPChVbYrE.LjvS0yD84RlooOb0bb.LNV."
+  },
+  "user": {
+    "fullName": "packer",
+    "userName": "packer",
+    "hashedPassword": true,
+    "password": "$6$7iYSwho02CpEOMkc$MpJJsYgMtlbSbLI3zFTpbBBDn7X7P8ExgpJ0d9VRxK1u0/E1U/lZQVg1UOYPMF1AJtB7saSyDJwHDJ/WFUT6j0"
+  },
+  "software": {
+    "patterns": [
+      "base",
+      "minimal_base"
+    ],
+    "packages": [
+      "openssh",
+      "sudo",
+      "xfsprogs",
+      "lvm2",
+      "mdadm",
+      "vim",
+      "sg3_utils",
+      "numactl",
+      "kdump",
+      "irqbalance",
+      "e2fsprogs",
+      "btrfsprogs",
+      "snapper",
+      "chrony",
+      "wget",
+      "curl",
+      "tar",
+      "gzip",
+      "suseconnect-ng"
+    ]
+  },
+  "storage": {
+    "drives": [
+      {
+        "partitions": [
+          {
+            "search": "*",
+            "delete": true
+          },
+          {
+            "filesystem": {
+              "path": "/",
+              "type": {
+                "btrfs": {
+                  "snapshots": true
+                }
+              }
+            },
+            "size": "15 GiB"
+          },
+          {
+            "filesystem": {
+              "path": "/home",
+              "type": "xfs"
+            },
+            "size": "7 GiB"
+          },
+          {
+            "filesystem": {
+              "path": "swap",
+              "type": "swap"
+            },
+            "size": "8 GiB"
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "post": [
+      {
+        "name": "add_packer_sudo_rule.sh",
+        "chroot": true,
+        "content": "#!/bin/sh\nprintf 'Defaults:packer !targetpw\\npacker ALL=(ALL,ALL) NOPASSWD: ALL\\n' > /etc/sudoers.d/packer\nchmod 440 /etc/sudoers.d/packer\n"
+      },
+      {
+        "name": "services.sh",
+        "chroot": true,
+        "content": "#!/bin/sh\nsystemctl enable sshd.service\nsystemctl disable firewalld.service || true\n# no LSM, like the previous sles16 image (installed with security=)\nif [ -f /etc/selinux/config ]; then\n    sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config\nfi\n"
+      }
+    ]
+  }
+}

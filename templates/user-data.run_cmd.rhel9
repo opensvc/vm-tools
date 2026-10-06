@@ -1,6 +1,8 @@
 runcmd:
   - /usr/bin/localectl set-keymap fr
   - echo "AllowUsers opensvc root" >> /etc/ssh/sshd_config
+  - [touch, /etc/cloud/cloud-init.disabled]
+  - yum -y --disablerepo='*' remove cloud-init
   - rm -f /etc/sysconfig/network-scripts/ifcfg*
   - systemctl stop NetworkManager
   - rm -f /etc/NetworkManager/system-connections/enp0s2*

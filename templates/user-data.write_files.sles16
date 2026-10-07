@@ -4,12 +4,12 @@ write_files:
   owner: "root:root"
   permissions: "0600"
 
-- path: /etc/NetworkManager/system-connections/br-slave-enp1s0.nmconnection
+- path: /etc/NetworkManager/system-connections/enp1s0.nmconnection
   permissions: '0600'
   owner: 'root:root'
   content: |
     [connection]
-    id=br-slave-enp1s0
+    id=enp1s0
     uuid=8d78989f-eb40-45d6-bbf6-443d860bc886
     type=ethernet
     controller=br-prd

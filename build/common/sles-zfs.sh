@@ -30,6 +30,9 @@ make -j$(nproc) || exit 1
 
 make install || exit 1
 
+# make install does not refresh the cache of /usr/local/lib
+ldconfig
+
 for cmd in zfs zpool fsck.zfs zdb zed zfs_ids_to_path zgenhostid zhack zinject zstream ztest zstreamdump
 do
 ln -s /usr/local/sbin/$cmd /usr/sbin/$cmd

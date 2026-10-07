@@ -18,6 +18,9 @@ runcmd:
   - /opt/vm-tools/build/common/cloud-init/disk_resize.sh
   - /opt/vm-tools/build/common/cloud-init/custom.sh
   - /opt/vm-tools/build/common/cloud-init/cleanup.sh
+  # no swap in the vms: "swap: size: 0" does not remove the swap file of the image
+  - if [ -f /swap.img ]; then swapoff /swap.img; rm -f /swap.img; fi
+  - sed -i '/^\/swap.img\s/d' /etc/fstab
   - systemctl enable opensvc-qanode-wait-ready.service
   - [reboot]
 

@@ -73,7 +73,10 @@ OSVC_IPV6_VRACK_PREFIX=${OSVC_IPV6_VRACK_PREFIX}
 
 # VM_LINKED_CLONE
 # false: vm base image is fully copied into vm filesystem before creating system.qcow2
-# true: system.qcow2 is directly backed by shared vm base image (warning: fastest but greater risk)
+# true: system.qcow2 is backed by a hard link of the shared base image, pinned in
+#       $KVM_IMAGES_ROOT/pinned: a rebuilt or downloaded base image never changes
+#       the content under an existing vm. tools/image.gc.sh removes the pinned
+#       images no vm uses anymore.
 VM_LINKED_CLONE=${VM_LINKED_CLONE:-false}
 
 # VM_STORAGE_TYPE
@@ -138,15 +141,46 @@ function create_std_vmdisks()
     title End:$FUNCNAME
 }
 
+function pin_base_image()
+{
+    title Begin:$FUNCNAME
+    local PINNED_DIR=$KVM_IMAGES_ROOT/pinned
+    local NAME=$(basename $VM_BASE_IMAGE .qcow2)
+    local TMP_LINK=$PINNED_DIR/.$NAME.$$.tmp
+    mkdir -p $PINNED_DIR
+    # held until the vm is defined, so that image.gc.sh never sees the
+    # new overlay without its domain
+    exec 9>$PINNED_DIR/.lock
+    flock -w 600 9 || exiterr "unable to lock $PINNED_DIR"
+    # the link name carries the inode of the linked file, read after linking
+    # in case the base image is replaced meanwhile
+    ln -f $KVM_IMAGES_ROOT/$VM_BASE_IMAGE $TMP_LINK || exiterr "unable to pin $KVM_IMAGES_ROOT/$VM_BASE_IMAGE"
+    PINNED_IMAGE=$PINNED_DIR/$NAME@$(stat -c %i $TMP_LINK).qcow2
+    if [ -f $PINNED_IMAGE ]; then
+        rm -f $TMP_LINK
+    else
+        mv $TMP_LINK $PINNED_IMAGE
+    fi
+    echo "Base image $KVM_IMAGES_ROOT/$VM_BASE_IMAGE pinned as $PINNED_IMAGE"
+    title End:$FUNCNAME
+}
+
 function create_ci_vmdisks()
 {
     title Begin:$FUNCNAME
     [[ -f $VM_ROOT/system.qcow2 ]] && exiterr "$VM_ROOT/system.qcow2 already exist"
     [[ -f $VM_ROOT/data.qcow2 ]] && exiterr "$VM_ROOT/data.qcow2 already exist"
     BACKING_FILE="$VM_ROOT/$VM_BASE_IMAGE"
-    [[ $VM_LINKED_CLONE == "true" ]] && BACKING_FILE=$KVM_IMAGES_ROOT/$VM_BASE_IMAGE
+    OVERLAY_OPTS="backing_file=$BACKING_FILE"
+    if [[ $VM_LINKED_CLONE == "true" ]]; then
+        pin_base_image
+        BACKING_FILE=$PINNED_IMAGE
+        # 4k subclusters: the first write in a cluster copies 4k from the base
+        # image instead of the whole cluster
+        OVERLAY_OPTS="backing_file=$BACKING_FILE,extended_l2=on,cluster_size=128k"
+    fi
     echo "Creating system.qcow2 backed by $BACKING_FILE"
-    qemu-img create -f qcow2 -F qcow2 -o backing_file=$BACKING_FILE $VM_ROOT/system.qcow2 && \
+    qemu-img create -f qcow2 -F qcow2 -o $OVERLAY_OPTS $VM_ROOT/system.qcow2 && \
         qemu-img resize $VM_ROOT/system.qcow2 $VM_SYS_SIZE
     qemu-img create -f qcow2 $VM_ROOT/data.qcow2 $VM_DATA_SIZE
     title End:$FUNCNAME
@@ -254,9 +288,14 @@ function create_uefi() {
         UEFI_VARS="${UEFI_VARS}"
         [[ -z "$UEFI_VARS" ]] && {
             # no vars definition set in VM_CONFIGS
-	    [[ -f $KVM_IMAGES_ROOT/$VM_DISTRO.efivars.fd ]] && {
-                echo "Copying $KVM_IMAGES_ROOT/$VM_DISTRO.efivars.fd to $VM_ROOT/uefi.vars.fd"
-	        cp $KVM_IMAGES_ROOT/$VM_DISTRO.efivars.fd $VM_ROOT/uefi.vars.fd
+            EFIVARS=$KVM_IMAGES_ROOT/$VM_DISTRO.efivars.fd
+            # some builds name their vars after the image (u2404), not the distro (ubuntu24)
+            if [ ! -f $EFIVARS ]; then
+                EFIVARS=$KVM_IMAGES_ROOT/$(basename $VM_BASE_IMAGE .qcow2 | sed 's/^packer-uefi-//').efivars.fd
+            fi
+	    [[ -f $EFIVARS ]] && {
+                echo "Copying $EFIVARS to $VM_ROOT/uefi.vars.fd"
+	        cp $EFIVARS $VM_ROOT/uefi.vars.fd
 	    }
             [[ -f $VM_ROOT/uefi.vars.fd ]] && {
                 UEFI_VARS="$VM_ROOT/uefi.vars.fd"

@@ -39,3 +39,7 @@ do
 }
 done
 echo "end rm logical volumes" | systemd-cat
+
+echo "begin image gc" | systemd-cat
+$TOOLS/image.gc.sh || echo "image gc failed"
+echo "end image gc" | systemd-cat

@@ -112,6 +112,12 @@ systemctl -q is-enabled iscsi.service || {
 
 iscsiadm -m discovery -t st -p $ISCSITGTIP && {
     iscsiadm  -m node | grep -w $HOSTNAME | awk '{print $2}' | xargs -n 1 iscsiadm -m node --login --targetname
+    # the discovery records the targets of every node of the nas, with
+    # node.startup = automatic: only ours may stay automatic, the nas acl
+    # rejects the others and open-iscsi.service fails at each boot
+    iscsiadm -m node | grep -vw $HOSTNAME | awk '{print $2}' | while read TARGET; do
+        iscsiadm -m node --targetname $TARGET -o update -n node.startup -v manual
+    done
 }
 
 exit 0

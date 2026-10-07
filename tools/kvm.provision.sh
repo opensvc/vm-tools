@@ -56,6 +56,8 @@ done
 VM_NIC=${VM_NIC:-eth0}
 VM_NIC_MODEL=${VM_NIC_MODEL:-virtio}
 VM_AUDIO=${VM_AUDIO:-none}
+# free page reporting lets the guests (linux >= 5.7) give freed memory back to the host
+VM_MEMBALLOON=${VM_MEMBALLOON:-virtio,freePageReporting=on,stats.period=10}
 [[ "$VM_DISTRO" =~ ^debian.* ]] && VM_NIC="enp1s0"
 [[ "$VM_DISTRO" =~ ^ubuntu.* ]] && VM_NIC="enp1s0"
 
@@ -309,6 +311,7 @@ function execute_virtinstall()
     echo virt-install \
     --connect qemu:///system \
     --audio $VM_AUDIO \
+    --memballoon $VM_MEMBALLOON \
     --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=$VM_VNCIP,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
     --virt-type kvm \
     --name $VM_NAME \
@@ -322,6 +325,7 @@ function execute_virtinstall()
     virt-install \
     --connect qemu:///system \
     --audio $VM_AUDIO \
+    --memballoon $VM_MEMBALLOON \
     --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=$VM_VNCIP,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
     --virt-type kvm \
     --name $VM_NAME \

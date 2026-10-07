@@ -4,6 +4,7 @@ runcmd:
   - [touch, /etc/cloud/cloud-init.disabled]
   - zypper --non-interactive --no-refresh remove cloud-init
   - sed -i 's/NETCONFIG_DNS_STATIC_SERVERS=.*$/NETCONFIG_DNS_STATIC_SERVERS="VM_NET.VM_CID.0.1 VM_NET.VM_CID.1.1"/g' /etc/sysconfig/network/config
+  - sed -i 's/NETCONFIG_DNS_STATIC_SEARCHLIST=.*$/NETCONFIG_DNS_STATIC_SEARCHLIST="vdc.opensvc.com opensvc.com"/g' /etc/sysconfig/network/config
   - systemctl restart network
   - /root/wait-for-net.sh
   - curl -o /root/sles-register.sh -sSL https://raw.githubusercontent.com/opensvc/vm-tools/main/build/common/sles-register.sh

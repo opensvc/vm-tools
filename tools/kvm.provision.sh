@@ -314,6 +314,10 @@ function execute_virtinstall()
 	title Begin:$FUNCNAME
 	VM_CPU=${VM_CPU:-2}
 	VM_RAM=${VM_RAM:-2048}
+	# VM_MAXRAM: memory the guest balloon can grow to (virsh setmem),
+	# VM_RAM being the memory allocated at boot. empty: VM_RAM
+	VM_MEMORY_OPTS="$VM_RAM"
+	[[ -n "$VM_MAXRAM" ]] && VM_MEMORY_OPTS="memory=$VM_MAXRAM,currentMemory=$VM_RAM"
     VM_OSVARIANT=$(get_kvm_osvariant)
 	VM_CONSOLE_KEYMAP=${VM_CONSOLE_KEYMAP:-fr}
 	VM_VIRTINSTALL_OPTS=${VM_VIRTINSTALL_OPTS}
@@ -354,7 +358,7 @@ function execute_virtinstall()
     --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=$VM_VNCIP,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
     --virt-type kvm \
     --name $VM_NAME \
-    --ram $VM_RAM \
+    --memory $VM_MEMORY_OPTS \
     --vcpus=$VM_CPU \
     --os-variant $VM_OSVARIANT \
     --iothreads 1 \
@@ -368,7 +372,7 @@ function execute_virtinstall()
     --graphics vnc,keymap=$VM_CONSOLE_KEYMAP,listen=$VM_VNCIP,port=$VM_VNCPORT,password=$VM_VNCPASSWORD \
     --virt-type kvm \
     --name $VM_NAME \
-    --ram $VM_RAM \
+    --memory $VM_MEMORY_OPTS \
     --vcpus=$VM_CPU \
     --os-variant $VM_OSVARIANT \
     --iothreads 1 \

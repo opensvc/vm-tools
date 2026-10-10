@@ -56,8 +56,9 @@ done
 VM_NIC=${VM_NIC:-eth0}
 VM_NIC_MODEL=${VM_NIC_MODEL:-virtio}
 VM_AUDIO=${VM_AUDIO:-none}
-# free page reporting lets the guests (linux >= 5.7) give freed memory back to the host
-VM_MEMBALLOON=${VM_MEMBALLOON:-virtio,freePageReporting=on,stats.period=10}
+# free page reporting lets the guests (linux >= 5.7) give freed memory back to the host,
+# autodeflate lets a guest near oom take its memory back up to VM_MAXRAM
+VM_MEMBALLOON=${VM_MEMBALLOON:-virtio,autodeflate=on,freePageReporting=on,stats.period=10}
 [[ "$VM_DISTRO" =~ ^debian.* ]] && VM_NIC="enp1s0"
 [[ "$VM_DISTRO" =~ ^ubuntu.* ]] && VM_NIC="enp1s0"
 

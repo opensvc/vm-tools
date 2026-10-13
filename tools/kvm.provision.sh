@@ -211,6 +211,17 @@ function substitute_patterns()
     title End:$FUNCNAME
 }
 
+# remove the write_files entry of a file from the user-data
+function drop_user_data_file()
+{
+    local FILE_PATH=$1
+    awk -v p="- path: $FILE_PATH" '
+        $0 == p { skip = 1; next }
+        skip && (/^- path:/ || /^[^ -]/) { skip = 0 }
+        !skip
+    ' $VM_ROOT/user-data > $VM_ROOT/user-data.tmp && mv -f $VM_ROOT/user-data.tmp $VM_ROOT/user-data
+}
+
 function gen_cloud_init_files()
 {
     title Begin:$FUNCNAME 
@@ -247,6 +258,9 @@ function gen_cloud_init_files()
             cat $TEMPLATES/user-data.$SECTION.$VM_DISTRO >> $VM_ROOT/user-data
         done
 	echo >> $VM_ROOT/user-data
+	# no vrack nic: the br-vrack bridge would stay without carrier and
+	# systemd-networkd-wait-online would time out at boot (2 minutes)
+	[[ -z "$VM_IPV6_BRIDGE" ]] && drop_user_data_file /etc/netplan/br-vrack.yaml
     fi
 
     if [ "$CUSTOMIZE_NETWORK_CONFIG" = true ] ; then

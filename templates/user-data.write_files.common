@@ -1,0 +1,11 @@
+# the warnings logged just before a node crashes itself (om split action) never
+# reach the journal on disk: write them to the serial console too, which the
+# hypervisor logs in console.log, in the vm directory
+- path: /etc/systemd/journald.conf.d/console.conf
+  content: |
+    [Journal]
+    ForwardToConsole=yes
+    TTYPath=/dev/ttyS0
+    MaxLevelConsole=warning
+  owner: "root:root"
+  permissions: "0644"

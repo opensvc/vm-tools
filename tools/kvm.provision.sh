@@ -256,6 +256,11 @@ function gen_cloud_init_files()
         for SECTION in write_files run_cmd
         do
             cat $TEMPLATES/user-data.$SECTION.$VM_DISTRO >> $VM_ROOT/user-data
+            # entries shared by all the distros, appended to the distro list
+            [[ -f $TEMPLATES/user-data.$SECTION.common ]] && {
+                echo >> $VM_ROOT/user-data
+                cat $TEMPLATES/user-data.$SECTION.common >> $VM_ROOT/user-data
+            }
         done
 	echo >> $VM_ROOT/user-data
 	# no vrack nic: the br-vrack bridge would stay without carrier and
@@ -378,7 +383,7 @@ function execute_virtinstall()
     --os-variant $VM_OSVARIANT \
     --iothreads 1 \
     --noautoconsole \
-    --console pty,target_type=serial,log.file=$VM_ROOT/console.log $VM_VIRTINSTALL_OPTS
+    --console pty,target_type=serial,log.file=$VM_ROOT/console.log,log.append=on $VM_VIRTINSTALL_OPTS
 
     virt-install \
     --connect qemu:///system \
@@ -392,7 +397,7 @@ function execute_virtinstall()
     --os-variant $VM_OSVARIANT \
     --iothreads 1 \
     --noautoconsole \
-    --console pty,target_type=serial,log.file=$VM_ROOT/console.log $VM_VIRTINSTALL_OPTS
+    --console pty,target_type=serial,log.file=$VM_ROOT/console.log,log.append=on $VM_VIRTINSTALL_OPTS
     title End:$FUNCNAME
 }
 

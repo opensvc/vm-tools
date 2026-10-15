@@ -5,3 +5,10 @@ osvc_deb_common_pkg:
 
 osvc_qascripts_root: "/home/opensvc"
 osvc_qascripts_profile: "{{ osvc_qascripts_root }}/.profile"
+
+# libvirt stack: the functional tests run kvm guests on the nodes
+osvc_libvirt_pkg:
+  - libvirt-daemon-system
+  - qemu-system-x86
+  - qemu-utils
+  - virtinst

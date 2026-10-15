@@ -4,3 +4,10 @@ osvc_rpm_common_pkg:
 
 osvc_qascripts_root: "/home/opensvc"
 osvc_qascripts_profile: "{{ osvc_qascripts_root }}/.bash_profile"
+
+# libvirt stack: the functional tests run kvm guests on the nodes
+osvc_libvirt_pkg:
+  - libvirt-daemon-qemu
+  - qemu-tools
+  - qemu-x86
+  - virt-install

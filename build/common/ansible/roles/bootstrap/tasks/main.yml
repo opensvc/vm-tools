@@ -5,6 +5,30 @@
 - name: Deploy per OS playbook
   include_tasks: "install-{{ ansible_facts['os_family'] }}.yml"
 
+- name: Install the libvirt stack
+  package:
+    name: "{{ osvc_libvirt_pkg }}"
+    state: present
+  when: osvc_libvirt_pkg is defined
+
+# the default network starts a dnsmasq and a virbr0 bridge on every node,
+# that the network and dns tests do not expect
+- name: Do not autostart the libvirt default network
+  file:
+    path: /etc/libvirt/qemu/networks/autostart/default.xml
+    state: absent
+  when: osvc_libvirt_pkg is defined
+
+# the distros start either the monolithic libvirtd or the modular daemons
+# (virtqemud, socket activated): enable libvirtd only when none is
+- name: Enable the libvirt daemon
+  shell: >-
+    systemctl is-enabled -q libvirtd.service ||
+    systemctl is-enabled -q libvirtd.socket ||
+    systemctl is-enabled -q virtqemud.socket ||
+    systemctl enable libvirtd.service
+  when: osvc_libvirt_pkg is defined
+
 - name: Deploy mycurl script
   copy:
     src: files/mycurl

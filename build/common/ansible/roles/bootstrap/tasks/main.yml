@@ -120,16 +120,18 @@
     mode: 0755
   when: (ansible_facts['system'] == "SunOS" )
 
-# lvm applies the first rule a device matches: the drbd devices are rejected
-# before everything else is accepted, or lvs opens them on every status, and
-# each open is a drbd state event
+# lvm accepts a device when one of its names is accepted before it is
+# rejected: the drbd devices are rejected by all their names, /dev/drbd* and
+# /dev/block/147:* (147 is the drbd major), before everything else is
+# accepted. Else lvs opens them on every status, and each open is a drbd
+# state event.
 - name: remove drbd devices from lvm
   ansible.builtin.lineinfile:
     backup: yes
     path: /etc/lvm/lvm.conf
     regexp: '^\s*global_filter\s*='
     insertafter: '.*# global_filter = \[ "a\|.*\|" \].*'
-    line: '        global_filter = [ "r|^/dev/drbd|", "a|.*|" ]'
+    line: '        global_filter = [ "r|^/dev/drbd|", "r|^/dev/block/147:|", "a|.*|" ]'
   when: (ansible_facts['system'] == "Linux" )
 
 - name: Ensure hostname does not point to 127.0.1.1 in /etc/hosts

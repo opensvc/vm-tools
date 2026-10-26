@@ -261,6 +261,13 @@ function gen_cloud_init_files()
                 echo >> $VM_ROOT/user-data
                 cat $TEMPLATES/user-data.$SECTION.common >> $VM_ROOT/user-data
             }
+            # per-vm extra entries for this section (e.g. an extra netplan
+            # file); appended inside the section so write_files items stay
+            # under the single write_files: key
+            [[ -f $VM_CONFIGS/user-data.$SECTION.extra ]] && {
+                echo >> $VM_ROOT/user-data
+                cat $VM_CONFIGS/user-data.$SECTION.extra >> $VM_ROOT/user-data
+            }
         done
 	echo >> $VM_ROOT/user-data
 	# no vrack nic: the br-vrack bridge would stay without carrier and

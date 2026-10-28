@@ -144,6 +144,10 @@ for c in $CLUSTERS; do
 	adddisk $(diq $c "_kvm1") 20G
 	adddisk $(diq $c "_kvm2") 20G
 
+	# lun for the disk heartbeat scenarios, private to the cluster (the
+	# global_diskq is shared by the clusters of the hypervisor)
+	adddisk $(diq $c "_hb1") 128m
+
 	# luns for mdadm scenarios
 	adddisk $(diq $c "_md1") 16m
 	adddisk $(diq $c "_md2") 16m
@@ -171,6 +175,7 @@ for c in $CLUSTERS; do
 		for t in $(seq 1 $TARGETS_PER_NODE); do
 			addacl $(tiq $n $t) $(niq $n)
 			mapdisk $(tiq $n $t) global_diskq 30
+			mapdisk $(tiq $n $t) $(diq $c "_hb1") 31
 			mapdisk $(tiq $n $t) $(diq $c "_lxc1") 40
 			mapdisk $(tiq $n $t) $(diq $c "_lxc2") 41
 			mapdisk $(tiq $n $t) $(diq $c "_md1") 42

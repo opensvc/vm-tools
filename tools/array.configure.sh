@@ -211,3 +211,7 @@ for c in $CLUSTERS; do
 
 	done
 done
+
+# the commands above change the running configuration only: save it, for the
+# luns to come back at the next boot
+$ECHO $ARRAY saveconfig

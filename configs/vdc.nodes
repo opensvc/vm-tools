@@ -1,4 +1,5 @@
 # name cluster_id ip_last_member ip_first_member
+# 10.<cluster_id>.0.200-254: reserved to the om ipam (qatests lan networks), never declare names there
 # 0
 c0envoy1 0 2 10
 c0envoy2 0 3 10

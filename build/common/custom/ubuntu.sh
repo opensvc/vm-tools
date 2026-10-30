@@ -21,10 +21,13 @@ which lxc-create >> /dev/null 2>&1 && {
 	echo "Loading LXC cache"
     lxc-create -n dummy1 -t ubuntu -- --release jammy
     lxc-create -n dummy2 -t ubuntu -- --release noble
+    # The ubuntu template can not make an unprivileged container: the qa
+    # tests use the download template, from its cache with --force-cache.
+    lxc-create -n dummy3 -t download -- --dist ubuntu --release jammy --arch amd64
     lxc-ls
     ls -l /var/cache/lxc/
     du -sh /var/cache/lxc/
-    lxc-destroy dummy1 ; lxc-destroy dummy2
+    lxc-destroy dummy1 ; lxc-destroy dummy2 ; lxc-destroy dummy3
 }
 
 [[ ! -d /etc/apparmor.d/disable ]] && mkdir -p /etc/apparmor.d/disable

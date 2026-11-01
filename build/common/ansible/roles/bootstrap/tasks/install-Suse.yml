@@ -27,6 +27,7 @@
       - lsscsi
       - multipath-tools
       - nfs-client
+      - nfs-kernel-server
       - open-iscsi
       - python3-cryptography
       - python3-requests

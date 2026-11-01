@@ -5,6 +5,24 @@
 - name: Deploy per OS playbook
   include_tasks: "install-{{ ansible_facts['os_family'] }}.yml"
 
+# plakar, a backup store type of the agent, has no repository: the
+# packages of a release
+- name: Install plakar (deb)
+  apt:
+    deb: "{{ plakar_url }}.deb"
+  when:
+    - ansible_facts['os_family'] == "Debian"
+    - ansible_facts['architecture'] == "x86_64"
+
+- name: Install plakar (rpm)
+  package:
+    name: "{{ plakar_url }}.rpm"
+    state: present
+    disable_gpg_check: true
+  when:
+    - ansible_facts['os_family'] in ["RedHat", "Suse"]
+    - ansible_facts['architecture'] == "x86_64"
+
 - name: Install the libvirt stack
   package:
     name: "{{ osvc_libvirt_pkg }}"

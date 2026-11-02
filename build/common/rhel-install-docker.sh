@@ -25,3 +25,10 @@ sudo dnf makecache
 sudo dnf -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 sudo systemctl enable --now docker
+
+# podman next to docker-ce, for the tests of the podman driver: podman runs
+# with crun, containerd.io having replaced runc, and podman-docker is left
+# out, docker-ce-cli owning /usr/bin/docker
+echo '==> Installing Podman'
+
+sudo dnf -y install podman

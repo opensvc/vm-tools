@@ -6,7 +6,7 @@ zypper --non-interactive --gpg-auto-import-keys install qemu-kvm virt-install vi
 
 # only available on sles15
 grep -q 'suse:sles:15' /etc/os-release && {
-    zypper --non-interactive --gpg-auto-import-keys install mkisofs cni cni-plugins lxc lxc-bash-completion
+    zypper --non-interactive --gpg-auto-import-keys install mkisofs cni cni-plugins lxc lxc-bash-completion debootstrap
 }
 
 exit 0

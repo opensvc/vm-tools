@@ -24,4 +24,7 @@ systemctl -q is-enabled docker.service || {
     systemctl enable docker.service
 }
 
+# the lxc caches of the qa tests (610, 611, 015)
+. ./lxc-cache.sh
+
 /bin/true

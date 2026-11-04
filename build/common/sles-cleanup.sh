@@ -16,8 +16,8 @@ rm -rf /usr/share/doc/linux-firmware/*
 echo "remove /usr/share/doc/"
 rm -rf /usr/share/doc/*
 
-echo "remove /var/cache"
-find /var/cache -type f -exec rm -rf {} \;
+echo "remove /var/cache, except the lxc caches the qa tests use"
+find /var/cache -path /var/cache/lxc -prune -o -type f -exec rm -f {} +
 
 echo "truncate any logs that have built up during the install"
 find /var/log -type f -exec truncate --size=0 {} \;

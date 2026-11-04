@@ -11,7 +11,9 @@ echo "remove obsolete networking packages"
 apt-get -y purge ppp pppconfig pppoeconf;
 
 echo "remove packages we don't need"
-apt-get -y purge popularity-contest command-not-found friendly-recovery laptop-detect motd-news-config usbutils grub-legacy-ec2
+# not usbutils: libosinfo depends on it on ubuntu 20.04, and its purge
+# removes virtinst, which the kvm tests of the nodes need
+apt-get -y purge popularity-contest command-not-found friendly-recovery laptop-detect motd-news-config grub-legacy-ec2
 
 # 22.04+ don't have this
 echo "remove the fonts-ubuntu-font-family-console"

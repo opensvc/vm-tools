@@ -14,11 +14,14 @@ ROOTDEV=$(findmnt -no SOURCE /)
 ROOTVG=$(lvs --noheadings -o vg_name "${ROOTDEV}" 2>/dev/null | tr -d ' ')
 ROOTVGUUID=$(lvs --noheadings -o vg_uuid "${ROOTDEV}" 2>/dev/null | tr -d ' ')
 
-grep -q 'use_lvmetad = 1' /etc/lvm/lvm.conf || {
+# lvmetad (el7) caches the physical volumes: a node would keep seeing a vg
+# a peer removed from a shared lun
+grep -q 'use_lvmetad = 1' /etc/lvm/lvm.conf && {
 echo "Disable lvmetad"
 cp /etc/lvm/lvm.conf /etc/lvm/lvm.conf.preosvc
 cat /etc/lvm/lvm.conf.preosvc | sed -e 's/use_lvmetad = 1/use_lvmetad = 0/g' > /etc/lvm/lvm.conf
 rm -f /etc/lvm/lvm.conf.preosvc
+systemctl disable --now lvm2-lvmetad.socket lvm2-lvmetad.service
 }
 
 grep -q 'hosttags = 1' /etc/lvm/lvm.conf || {
@@ -40,14 +43,13 @@ activation {
 EOF
 }
 
-grep ' / ' /proc/mounts | grep -q btrfs && {
-    echo "root filesystem is btrfs type. local tag not needed"
-    exit 0
-}
-
 # the root vg must be activable with volume_list, else any regenerated
-# initramfs (kernel update, fips) can not activate the root lv at boot
-if [ -n "${ROOTVGUUID}" ]
+# initramfs (kernel update, fips) can not activate the root lv at boot. A
+# btrfs root (sles) is not on lvm: no tag, but the data vg below all the same.
+if grep ' / ' /proc/mounts | grep -q btrfs
+then
+    echo "root filesystem is btrfs type. local tag not needed"
+elif [ -n "${ROOTVGUUID}" ]
 then
 	echo "Add tag local to rootvg ${ROOTVG} (${ROOTVGUUID})"
 	vgchange --addtag local --select "vg_uuid=${ROOTVGUUID}" || exit 1

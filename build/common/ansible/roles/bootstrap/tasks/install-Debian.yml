@@ -96,6 +96,8 @@
     packages:
       - iptables-persistent
       - netfilter-persistent
+      # priority standard on 22.04+, but universe/extra on 20.04
+      - nftables
       - python-is-python3
       - xauth
   when: (ansible_facts['distribution'] == "Ubuntu" ) and

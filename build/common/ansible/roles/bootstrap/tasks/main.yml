@@ -6,10 +6,14 @@
   include_tasks: "install-{{ ansible_facts['os_family'] }}.yml"
 
 # plakar, a backup store type of the agent, has no repository: the
-# packages of a release
+# packages of a release, downloaded from github: retry on a transient failure
 - name: Install plakar (deb)
   apt:
     deb: "{{ plakar_url }}.deb"
+  register: plakar_install
+  until: plakar_install is succeeded
+  retries: 5
+  delay: 30
   when:
     - ansible_facts['os_family'] == "Debian"
     - ansible_facts['architecture'] == "x86_64"
@@ -19,6 +23,10 @@
     name: "{{ plakar_url }}.rpm"
     state: present
     disable_gpg_check: true
+  register: plakar_install
+  until: plakar_install is succeeded
+  retries: 5
+  delay: 30
   when:
     - ansible_facts['os_family'] in ["RedHat", "Suse"]
     - ansible_facts['architecture'] == "x86_64"

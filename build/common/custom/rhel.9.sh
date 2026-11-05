@@ -10,3 +10,7 @@
     grub2-mkconfig -o /boot/grub2/grub.cfg
     grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
 }
+
+# enable the post-quantum hybrid key exchange (mlkem768x25519-sha256) for openssh
+# the DEFAULT policy of rhel9 leaves it out; rhel10 already has it by default
+update-crypto-policies --set DEFAULT:PQ

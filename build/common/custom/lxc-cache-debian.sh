@@ -44,6 +44,18 @@ if [ $rc -ne 0 ]; then
     exit 1
 fi
 
+# The download template wrote the name of the container in place of the
+# LXC_NAME placeholder of the files the cache lists in templates (hostname,
+# hosts): put it back, for the containers made from the cache to get their
+# own name.
+while read -r f; do
+    [ -f "$LXC_DEBIAN_ROOTFS$f" ] && sed -i "s/\b$LXC_DEBIAN_CT\b/LXC_NAME/g" "$LXC_DEBIAN_ROOTFS$f"
+done < $LXC_DEBIAN_CACHE/templates
+if grep -rlI "$LXC_DEBIAN_CT" $LXC_DEBIAN_ROOTFS/etc; then
+    echo "the debian $VERSION_CODENAME rootfs still names $LXC_DEBIAN_CT" >&2
+    exit 1
+fi
+
 # The rootfs with the dependencies replaces the one of the cache, in the
 # format the download template extracts (tar --numeric-owner -xpJf).
 tar --numeric-owner -C $LXC_DEBIAN_ROOTFS -cpJf $LXC_DEBIAN_CACHE/rootfs.tar.xz.new . && \

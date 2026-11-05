@@ -6,6 +6,9 @@
     update-grub || exit 1
 }
 
+# the lxc caches of the qa tests 610 and 611, an ubuntu release
+. ./lxc-cache.sh
+
 # the lxc cache of the qa test 015, with the dependencies of the agent
 . ./lxc-cache-debian.sh
 

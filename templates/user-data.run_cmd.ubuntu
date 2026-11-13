@@ -16,6 +16,7 @@ runcmd:
   - /opt/vm-tools/build/common/cloud-init/change_lxc_bridge_mac.sh
   - /opt/vm-tools/build/common/cloud-init/net.sh
   - /opt/vm-tools/build/common/cloud-init/disk_resize.sh
+  - /opt/vm-tools/build/common/cloud-init/sysstat.sh
   - /opt/vm-tools/build/common/cloud-init/custom.sh
   - /opt/vm-tools/build/common/cloud-init/cleanup.sh
   # no swap in the vms: "swap: size: 0" does not remove the swap file of the image

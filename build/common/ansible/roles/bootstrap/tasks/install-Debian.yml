@@ -105,24 +105,31 @@
 
 # The qa test 020 pushes the sysstat stats on the ubuntu labs, and checks
 # the refusal without sysstat on the other ones: keep it ubuntu only.
+# Installed but not collecting in the image: the collection is enabled at
+# the instantiation by cloud-init (build/common/cloud-init/sysstat.sh), so
+# the image carries no sa file of the build host.
 - name: install sysstat on ubuntu
   apt:
     name: sysstat
     state: present
   when: ansible_facts['distribution'] == "Ubuntu"
 
-- name: enable the sysstat collection on ubuntu
+- name: disable the sysstat collection in the ubuntu image
   lineinfile:
     path: /etc/default/sysstat
     regexp: '^ENABLED='
-    line: 'ENABLED="true"'
+    line: 'ENABLED="false"'
   when: ansible_facts['distribution'] == "Ubuntu"
 
-- name: start the sysstat collection on ubuntu
+- name: stop the sysstat collection in the ubuntu image
   service:
-    name: sysstat
-    enabled: yes
-    state: started
+    name: "{{ item }}"
+    enabled: no
+    state: stopped
+  loop:
+    - sysstat-collect.timer
+    - sysstat-summary.timer
+    - sysstat
   when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: install package for ubuntu

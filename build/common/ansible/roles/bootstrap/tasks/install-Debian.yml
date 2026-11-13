@@ -103,6 +103,28 @@
   when: (ansible_facts['distribution'] == "Ubuntu" ) and
         (ansible_facts['distribution_major_version']|int >= 20)
 
+# The qa test 020 pushes the sysstat stats on the ubuntu labs, and checks
+# the refusal without sysstat on the other ones: keep it ubuntu only.
+- name: install sysstat on ubuntu
+  apt:
+    name: sysstat
+    state: present
+  when: ansible_facts['distribution'] == "Ubuntu"
+
+- name: enable the sysstat collection on ubuntu
+  lineinfile:
+    path: /etc/default/sysstat
+    regexp: '^ENABLED='
+    line: 'ENABLED="true"'
+  when: ansible_facts['distribution'] == "Ubuntu"
+
+- name: start the sysstat collection on ubuntu
+  service:
+    name: sysstat
+    enabled: yes
+    state: started
+  when: ansible_facts['distribution'] == "Ubuntu"
+
 - name: install package for ubuntu
   apt:
     name:  "{{ packages }}"

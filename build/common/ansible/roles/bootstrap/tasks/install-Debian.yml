@@ -121,15 +121,23 @@
     line: 'ENABLED="false"'
   when: ansible_facts['distribution'] == "Ubuntu"
 
+# The timers come with sysstat 12.5 (22.04+): 20.04 collects from cron,
+# which ENABLED="false" stops.
+- name: find the sysstat timers in the ubuntu image
+  stat:
+    path: "/lib/systemd/system/{{ item }}"
+  loop:
+    - sysstat-collect.timer
+    - sysstat-summary.timer
+  register: sysstat_timers
+  when: ansible_facts['distribution'] == "Ubuntu"
+
 - name: stop the sysstat collection in the ubuntu image
   service:
     name: "{{ item }}"
     enabled: no
     state: stopped
-  loop:
-    - sysstat-collect.timer
-    - sysstat-summary.timer
-    - sysstat
+  loop: "{{ ['sysstat'] + (sysstat_timers.results | selectattr('stat', 'defined') | selectattr('stat.exists') | map(attribute='item') | list) }}"
   when: ansible_facts['distribution'] == "Ubuntu"
 
 - name: install package for ubuntu

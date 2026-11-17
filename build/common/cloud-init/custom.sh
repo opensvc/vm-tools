@@ -26,6 +26,8 @@ EOF
 cat >| /etc/sysctl.d/97-opensvc-ipv6.conf <<EOF
 net.ipv6.conf.all.ndisc_notify = 1
 net.ipv6.conf.default.ndisc_notify = 1
+# enable forwarding for strongSwan IPv6 VPN gateway
+net.ipv6.conf.all.forwarding = 1
 EOF
 
 # systemd-resolved tunables

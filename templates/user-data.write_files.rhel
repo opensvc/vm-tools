@@ -40,7 +40,6 @@ write_files:
     TYPE="Ethernet"
     BOOTPROTO="none"
     NAME="eth1"
-    DEVICE="eth1"
     HWADDR="22:23:24:VM_HEXCID:01:VM_IP"
     ONBOOT="yes"
     IPADDR=VM_NET.VM_CID.1.VM_IP
@@ -57,7 +56,6 @@ write_files:
     TYPE="Ethernet"
     BOOTPROTO="none"
     NAME="eth2"
-    DEVICE="eth2"
     HWADDR="22:23:24:VM_HEXCID:02:VM_IP"
     ONBOOT="yes"
     IPADDR=VM_NET.VM_CID.2.VM_IP
